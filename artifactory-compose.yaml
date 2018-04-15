@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  artifactory:
+    image: 'docker.bintray.io/jfrog/artifactory-oss:latest'
+    restart: always
+    hostname: 'artifactory.example.com'
+    ports:
+      - '8081:8081'
+    volumes:
+            - '/srv/arfifactory:/var/opt/jfrog/artifactory:Z'
+  
