@@ -12,12 +12,13 @@ services:
     ports:
       - '80:80'
       - '443:443'
-      - '22:22'
       - '8929:8929'
     volumes:
       - '/srv/gitlab/config:/etc/gitlab:Z'
       - '/srv/gitlab/logs:/var/log/gitlab:Z'
       - '/srv/gitlab/data:/var/opt/gitlab:Z'
+    networks:
+      dev-docker:
 
   runner:
     image: 'gitlab/gitlab-runner:latest'
@@ -27,4 +28,38 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:Z'
       - '/srv/gitlab-runner/config:/etc/gitlab-runner:Z'
+    networks:
+      dev-docker:
+
+
+  jenkins:
+    image: 'jenkins/jenkins:latest'
+    restart: always
+    links:
+            - "web:gitlab"
+    ports:
+      - "8080:8080" 
+      - "50000:50000"
+    volumes:
+      - "jenkins_home:/var/jenkins_home"
+    networks:
+      dev-docker:
+  nexus:
+    image: 'sonatype/nexus3'
+    restart: always
+    ports:
+      - '8081:8081'
+      - '5000:5000'
+    volumes:
+      - 'nexus-data:/nexus-data'
+    networks:
+      dev-docker:
+
+volumes:
+  jenkins_home:
+  nexus-data:
+
+networks:
+  dev-docker:
+    driver: bridge
 
